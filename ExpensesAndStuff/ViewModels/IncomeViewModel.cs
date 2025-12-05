@@ -185,7 +185,6 @@ namespace IncomesAndStuff.ViewModels
         private bool CanDelete(object? parameter) => true; //todo better check
         private bool CanAdd(object? parameter) => true; //todo better check
 
-
         private async void SaveChanges(object? parameter)
         {
             if (SelectedIncome is null) { return; }
