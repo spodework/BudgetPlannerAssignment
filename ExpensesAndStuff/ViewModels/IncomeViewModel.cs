@@ -182,8 +182,8 @@ namespace IncomesAndStuff.ViewModels
 
         }
 
-        private bool CanDelete(object? parameter) => true; //todo2: better check
-        private bool CanAdd(object? parameter) => true; //todo2: better check
+        private bool CanDelete(object? parameter) => true; //todo: better check
+        private bool CanAdd(object? parameter) => true; //todo: better check
 
         private async void SaveChanges(object? parameter)
         {
