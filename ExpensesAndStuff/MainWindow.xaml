@@ -1,0 +1,635 @@
+﻿<Window
+    x:Class="ExpensesAndStuff.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:helpers="clr-namespace:ExpensesAndStuff.Helpers"
+    xmlns:local="clr-namespace:ExpensesAndStuff"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:vm="clr-namespace:ExpensesAndStuff.ViewModels"
+    Title="MainWindow"
+    Width="800"
+    Height="450"
+    MinWidth="600"
+    MinHeight="600"
+    Loaded="Window_Loaded"
+    WindowStartupLocation="CenterScreen"
+    mc:Ignorable="d">
+
+    <Window.Resources>
+        <helpers:NullToBoolConverter x:Key="NullToBoolConverter" />
+    </Window.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <Grid
+            Grid.Row="0"
+            Margin="10"
+            HorizontalAlignment="Stretch">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <StackPanel Grid.Column="0" VerticalAlignment="Center">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock
+                        Padding="4,0"
+                        FontFamily="{StaticResource SymbolThemeFontFamily}"
+                        FontSize="36"
+                        Text="&#xE76E;" />
+                    <TextBlock
+                        Style="{StaticResource TitleTextBlockStyle}"
+                        Text="Budget Planner 2k25"
+                        TextAlignment="Center" />
+                </StackPanel>
+                <TextBlock Padding="20,0" Text="{Binding CurrentDateString}" />
+            </StackPanel>
+
+            <Button
+                Grid.Column="1"
+                Margin="5"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Stretch"
+                Command="{Binding ExpenseVM.SaveCommand}">
+                <StackPanel Orientation="Vertical">
+                    <TextBlock
+                        HorizontalAlignment="Center"
+                        FontFamily="{StaticResource SymbolThemeFontFamily}"
+                        FontSize="36"
+                        Text="&#xE74E;" />
+
+                    <TextBlock
+                        FontSize="12"
+                        TextAlignment="Center"
+                        TextWrapping="Wrap">
+                        Save Changes to DB!
+                    </TextBlock>
+                </StackPanel>
+            </Button>
+
+            <!--<Button
+                Grid.Column="1"
+                VerticalAlignment="Center"
+                Content="Add Absence Day"
+                Style="{DynamicResource AccentButtonStyle}" />-->
+
+        </Grid>
+        <TabControl Grid.Row="1">
+            <TabItem>
+                <TabItem.Header>
+                    <TextBlock TextAlignment="Center">Summary</TextBlock>
+                </TabItem.Header>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+
+                    <StackPanel Grid.Row="0" VerticalAlignment="Center">
+                        <TextBlock>All Expenses Recorded:</TextBlock>
+                        <TextBlock FontSize="24" Text="{Binding ExpenseVM.TotalAmount, StringFormat={}{0:F2}}" />
+                    </StackPanel>
+
+                    <StackPanel Grid.Row="1">
+                        <TextBlock>All Incomes Recorded</TextBlock>
+                        <TextBlock FontSize="24" Text="{Binding IncomeVM.TotalIncome, StringFormat={}{0:F2}}" />
+                    </StackPanel>
+
+                    <StackPanel Grid.Row="2">
+                        <TextBlock>Incomes - Expenses</TextBlock>
+                        <TextBlock FontSize="24" Text="{Binding IncomesMinusExpenses, StringFormat={}{0:F2}}" />
+                    </StackPanel>
+
+                    <StackPanel Grid.Row="3">
+                        <TextBlock>Monthly Forecast (TODO)</TextBlock>
+                        <TextBlock FontSize="24">Monthly Forecast (TODO)</TextBlock>
+                    </StackPanel>
+                </Grid>
+            </TabItem>
+            <!--  EXPPENSES HEREE  -->
+            <TabItem IsSelected="True">
+                <TabItem.Header>
+                    <TextBlock TextAlignment="Center">Expenses</TextBlock>
+                </TabItem.Header>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="100" />
+                    </Grid.RowDefinitions>
+
+                    <!--  EXPENSES ADDREMOVE BUTTONS  -->
+                    <Grid Grid.Row="0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                            <!--<ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />-->
+                        </Grid.ColumnDefinitions>
+
+
+                        <!--  IsEnabled="{Binding ExpenseVM.SelectedExpense, Converter={StaticResource NullToBoolConverter}}"  -->
+                        <StackPanel Grid.Column="0" Margin="5">
+                            <TextBlock>Current expense:</TextBlock>
+                            <StackPanel>
+                                <StackPanel Orientation="Vertical">
+                                    <TextBlock>Amount:</TextBlock>
+                                    <TextBox Text="{Binding ExpenseVM.SelectedExpense.Amount, Mode=TwoWay, StringFormat=N2, UpdateSourceTrigger=PropertyChanged}" />
+
+                                </StackPanel>
+                                <StackPanel Orientation="Vertical">
+                                    <TextBlock>Category:</TextBlock>
+
+                                    <!--  IsEnabled="{Binding ExpenseVM.SelectedExpense, Converter={StaticResource NullToBoolConverter}}"  -->
+                                    <ComboBox
+                                        x:Name="ComboBoxExpenseCategory"
+                                        VerticalAlignment="Stretch"
+                                        ItemsSource="{Binding ExpenseVM.ExpenseCategoryArray}"
+                                        SelectedItem="{Binding ExpenseVM.SelectedExpense.ExpenseCategory}" />
+                                </StackPanel>
+
+                                <StackPanel Orientation="Vertical">
+                                    <TextBlock>Frequency</TextBlock>
+
+                                    <!--  IsEnabled="{Binding ExpenseVM.SelectedExpense, Converter={StaticResource NullToBoolConverter}}"  -->
+                                    <ComboBox
+                                        x:Name="ComboBoxExpenseRecurrence"
+                                        VerticalAlignment="Stretch"
+                                        ItemsSource="{Binding ExpenseVM.ExpenseRecurrenceArray}"
+                                        SelectedItem="{Binding ExpenseVM.SelectedExpense.ExpenseRecurrence}" />
+                                </StackPanel>
+                            </StackPanel>
+                        </StackPanel>
+
+                        <!--<Rectangle
+                            Width="1"
+                            Margin="10,2"
+                            Fill="{DynamicResource ControlStrongFillColorDefaultBrush}" />-->
+
+                        <Button
+                            Grid.Column="1"
+                            Margin="5"
+                            HorizontalAlignment="Stretch"
+                            VerticalAlignment="Stretch"
+                            Command="{Binding ExpenseVM.DeleteCommand}">
+                            <StackPanel Orientation="Vertical">
+                                <TextBlock
+                                    HorizontalAlignment="Center"
+                                    FontFamily="{StaticResource SymbolThemeFontFamily}"
+                                    FontSize="24"
+                                    Text="&#xE74D;" />
+
+                                <TextBlock
+                                    FontSize="12"
+                                    TextAlignment="Center"
+                                    TextWrapping="Wrap">
+                                    Delete Selected Expense
+                                </TextBlock>
+                            </StackPanel>
+                        </Button>
+
+                        <!--<Rectangle
+                            Width="1"
+                            Margin="10,2"
+                            Fill="{DynamicResource ControlStrongFillColorDefaultBrush}" />-->
+
+                        <!--<Button
+                            Grid.Column="2"
+                            HorizontalAlignment="Stretch"
+                            VerticalAlignment="Stretch"
+                            Command="{Binding ExpenseVM.SaveCommand}">
+                            <StackPanel Orientation="Vertical">
+                                <TextBlock
+                                    HorizontalAlignment="Center"
+                                    FontFamily="{StaticResource SymbolThemeFontFamily}"
+                                    FontSize="24"
+                                    Text="&#xE74E;" />
+
+                                <TextBlock
+                                    FontSize="12"
+                                    TextAlignment="Center"
+                                    TextWrapping="Wrap">
+                                    Save changes to DB!
+                                </TextBlock>
+                            </StackPanel>
+                        </Button>-->
+
+                        <Button
+                            Grid.Column="3"
+                            Margin="5"
+                            HorizontalAlignment="Stretch"
+                            VerticalAlignment="Stretch"
+                            Command="{Binding ExpenseVM.AddCommand}">
+                            <StackPanel Orientation="Vertical">
+                                <TextBlock
+                                    HorizontalAlignment="Center"
+                                    FontFamily="{StaticResource SymbolThemeFontFamily}"
+                                    FontSize="24"
+                                    Text="&#xE710;" />
+
+                                <TextBlock
+                                    FontSize="12"
+                                    TextAlignment="Center"
+                                    TextWrapping="Wrap">
+                                    Add Expense
+                                </TextBlock>
+                            </StackPanel>
+                        </Button>
+                    </Grid>
+                    <DataGrid
+                        Grid.Row="1"
+                        AutoGenerateColumns="False"
+                        IsReadOnly="True"
+                        ItemsSource="{Binding ExpenseVM.ExpenseItems}"
+                        SelectedItem="{Binding ExpenseVM.SelectedExpense, Mode=TwoWay}"
+                        SelectionMode="Single">
+
+                        <DataGrid.Columns>
+
+
+                            <!--  Define the Category Column  -->
+                            <DataGridTextColumn
+                                Width="*"
+                                Binding="{Binding ExpenseCategory}"
+                                Header="Category" />
+
+                            <!--  Define the Amount Column (with Currency Format)  -->
+                            <DataGridTextColumn
+                                Width="*"
+                                Binding="{Binding Amount, StringFormat=C2}"
+                                Header="Amount" />
+
+                            <!--  Define the Date Column (with Custom Date Format)  -->
+                            <DataGridTextColumn
+                                Width="*"
+                                Binding="{Binding Date, StringFormat='MM/dd/yyyy'}"
+                                Header="Register Date" />
+
+                            <!--  Define the Amount Column (with Currency Format)  -->
+                            <DataGridTextColumn
+                                Width="*"
+                                Binding="{Binding ExpenseRecurrence}"
+                                Header="ExpenseRecurrence" />
+                            <!--<DataGridTextColumn
+                                Width="*"
+                                Binding="{Binding ExpensePayMonth}"
+                                Header="ExpensePayMonth" />-->
+                        </DataGrid.Columns>
+
+                    </DataGrid>
+
+                    <StackPanel Grid.Row="2">
+                        <TextBlock Text="{Binding ExpenseVM.TotalAmount, StringFormat=C}" />
+                        <StackPanel>
+
+                            <TextBlock VerticalAlignment="Top" Text="Expenses Next Month:" />
+                            <TextBlock
+                                VerticalAlignment="Top"
+                                FontSize="16"
+                                FontWeight="Bold"
+                                Text="{Binding ExpenseVM.NextMonthExpense}" />
+                        </StackPanel>
+                    </StackPanel>
+
+                </Grid>
+            </TabItem>
+
+            <!--  INCOMES START HERE  -->
+            <TabItem>
+                <TabItem.Header>
+                    <TextBlock TextAlignment="Center">Incomes</TextBlock>
+                </TabItem.Header>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="100" />
+                    </Grid.RowDefinitions>
+
+                    <!--  INCOME - ADDREMOVE BUTTONS  -->
+                    <Grid Grid.Row="0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                            <!--<ColumnDefinition Width="*" />-->
+                        </Grid.ColumnDefinitions>
+
+                        <StackPanel Grid.Column="0" Margin="5">
+                            <TextBlock>Current income:</TextBlock>
+                            <StackPanel>
+                                <StackPanel Orientation="Vertical">
+                                    <TextBlock>Amount:</TextBlock>
+
+                                    <!--  IsEnabled="{Binding IncomeVM.SelectedIncome, Converter={StaticResource NullToBoolConverter}}"  -->
+
+                                    <TextBox Text="{Binding IncomeVM.SelectedIncome.Amount, Mode=TwoWay, StringFormat=N2, UpdateSourceTrigger=PropertyChanged}" />
+
+                                </StackPanel>
+                                <StackPanel Orientation="Vertical">
+                                    <TextBlock>Category:</TextBlock>
+
+                                    <!--  IsEnabled="{Binding IncomeVM.SelectedIncome, Converter={StaticResource NullToBoolConverter}}"  -->
+                                    <ComboBox
+                                        x:Name="ComboBoxÌncomeCategory"
+                                        VerticalAlignment="Stretch"
+                                        ItemsSource="{Binding IncomeVM.IncomeCategoryArray}"
+                                        SelectedItem="{Binding IncomeVM.SelectedIncome.IncomeCategory}" />
+
+                                    <!--<TextBox IsEnabled="{Binding IncomeVM.SelectedIncome, Converter={StaticResource NullToBoolConverter}}" Text="{Binding IncomeVM.SelectedIncome.IncomeCategory, Mode=TwoWay, StringFormat=N2}" />-->
+                                </StackPanel>
+
+                                <StackPanel Orientation="Vertical">
+                                    <TextBlock>Frequency</TextBlock>
+                                    <!--  IsEnabled="{Binding IncomeVM.SelectedIncome, Converter={StaticResource NullToBoolConverter}}"  -->
+                                    <ComboBox
+                                        x:Name="ComboBoxÌncomeRecurrence"
+                                        VerticalAlignment="Stretch"
+                                        ItemsSource="{Binding IncomeVM.IncomeRecurrenceArray}"
+                                        SelectedItem="{Binding IncomeVM.SelectedIncome.IncomeRecurrence}" />
+                                </StackPanel>
+                            </StackPanel>
+                        </StackPanel>
+
+                        <!--<Rectangle
+                            Width="1"
+                            Margin="10,2"
+                            Fill="{DynamicResource ControlStrongFillColorDefaultBrush}" />-->
+
+                        <Button
+                            Grid.Column="1"
+                            Margin="5"
+                            HorizontalAlignment="Stretch"
+                            VerticalAlignment="Stretch"
+                            Command="{Binding IncomeVM.DeleteCommand}">
+                            <StackPanel Orientation="Vertical">
+                                <TextBlock
+                                    HorizontalAlignment="Center"
+                                    FontFamily="{StaticResource SymbolThemeFontFamily}"
+                                    FontSize="36"
+                                    Text="&#xE74D;" />
+
+                                <TextBlock
+                                    FontSize="12"
+                                    TextAlignment="Center"
+                                    TextWrapping="Wrap">
+                                    Delete Selected Income
+                                </TextBlock>
+                            </StackPanel>
+                        </Button>
+
+                        <!--<Rectangle
+                            Width="1"
+                            Margin="10,2"
+                            Fill="{DynamicResource ControlStrongFillColorDefaultBrush}" />-->
+
+                        <!--<Button
+                            Grid.Column="2"
+                            HorizontalAlignment="Stretch"
+                            VerticalAlignment="Stretch"
+                            Command="{Binding IncomeVM.SaveCommand}">
+                            <StackPanel Orientation="Vertical">
+                                <TextBlock
+                                    HorizontalAlignment="Center"
+                                    FontFamily="{StaticResource SymbolThemeFontFamily}"
+                                    FontSize="24"
+                                    Text="&#xE74E;" />
+
+                                <TextBlock
+                                    FontSize="12"
+                                    TextAlignment="Center"
+                                    TextWrapping="Wrap">
+                                    Save changes to DB!
+                                </TextBlock>
+                            </StackPanel>
+                        </Button>-->
+
+                        <Button
+                            Grid.Column="2"
+                            Margin="5"
+                            HorizontalAlignment="Stretch"
+                            VerticalAlignment="Stretch"
+                            Command="{Binding IncomeVM.AddCommand}">
+                            <StackPanel Orientation="Vertical">
+                                <TextBlock
+                                    HorizontalAlignment="Center"
+                                    FontFamily="{StaticResource SymbolThemeFontFamily}"
+                                    FontSize="36"
+                                    Text="&#xE710;" />
+
+                                <TextBlock
+                                    FontSize="12"
+                                    TextAlignment="Center"
+                                    TextWrapping="Wrap">
+                                    Add Income
+                                </TextBlock>
+                            </StackPanel>
+                        </Button>
+
+                        <Button
+                            Grid.Column="3"
+                            Margin="5"
+                            HorizontalAlignment="Stretch"
+                            VerticalAlignment="Stretch"
+                            Command="{Binding IncomeVM.CalculateSalaryCommand}">
+                            <StackPanel Orientation="Vertical">
+                                <TextBlock
+                                    HorizontalAlignment="Center"
+                                    FontFamily="{StaticResource SymbolThemeFontFamily}"
+                                    FontSize="24"
+                                    Text="&#xE710;" />
+
+                                <TextBlock
+                                    FontSize="12"
+                                    TextAlignment="Center"
+                                    TextWrapping="Wrap">
+                                    Update/Add Monthly Salary
+                                </TextBlock>
+                            </StackPanel>
+                        </Button>
+
+                        <!--<StackPanel Grid.Column="4" Orientation="Vertical">
+                            <TextBlock TextWrapping="Wrap">Monthly Income (1920hours max a year)</TextBlock>
+                            <ComboBox
+                                x:Name="ComboBoxIncomeFormat"
+                                VerticalAlignment="Stretch"
+                                ItemsSource="{Binding IncomeVM.IncomeFormatArray}"
+                                SelectedItem="{Binding IncomeVM.IncomeFormat}" />
+                            <TextBox Text="{Binding ExpenseVM.Income, Mode=TwoWay, StringFormat=N2, UpdateSourceTrigger=PropertyChanged}" />
+                            <TextBlock Text="{Binding IncomeVM.MonthlyIncome}" />
+                        </StackPanel>-->
+
+                    </Grid>
+                    <DataGrid
+                        Grid.Row="1"
+                        AutoGenerateColumns="False"
+                        IsReadOnly="True"
+                        ItemsSource="{Binding IncomeVM.IncomeItems}"
+                        SelectedItem="{Binding IncomeVM.SelectedIncome, Mode=TwoWay}"
+                        SelectionMode="Single">
+
+                        <DataGrid.Columns>
+
+
+                            <!--  Define the Category Column  -->
+                            <DataGridTextColumn
+                                Width="*"
+                                Binding="{Binding IncomeCategory}"
+                                Header="Category" />
+
+                            <!--  Define the Amount Column (with Currency Format)  -->
+                            <DataGridTextColumn
+                                Width="*"
+                                Binding="{Binding Amount, StringFormat=C2}"
+                                Header="Amount" />
+
+                            <!--  Define the Date Column (with Custom Date Format)  -->
+                            <DataGridTextColumn
+                                Width="*"
+                                Binding="{Binding Date, StringFormat='MM/dd/yyyy'}"
+                                Header="Register Date" />
+
+                            <!--  Define the Amount Column (with Currency Format)  -->
+                            <DataGridTextColumn
+                                Width="*"
+                                Binding="{Binding IncomeRecurrence}"
+                                Header="IncomeRecurrence" />
+                        </DataGrid.Columns>
+
+                    </DataGrid>
+
+                    <StackPanel Grid.Row="2">
+                        <TextBlock Text="{Binding IncomeVM.TotalIncome, StringFormat=C}" />
+                        <StackPanel>
+                            <TextBlock VerticalAlignment="Top" Text="Next month Incomes:" />
+                            <TextBlock
+                                VerticalAlignment="Top"
+                                FontSize="16"
+                                FontWeight="Bold"
+                                Text="{Binding IncomeVM.NextMonthIncome}" />
+                        </StackPanel>
+                    </StackPanel>
+
+                </Grid>
+            </TabItem>
+
+            <!--  ABSENCES HEREE  -->
+            <TabItem Header="VAB/Sickness">
+
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+
+                    <Grid Margin="5">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+
+                        <StackPanel Grid.Column="0" Orientation="Vertical">
+                            <StackPanel Orientation="Vertical">
+                                <TextBlock>Date:</TextBlock>
+
+                                <DatePicker SelectedDate="{Binding AbsenceVM.SelectedAbsence.Date}" />
+
+                            </StackPanel>
+                            <StackPanel Orientation="Vertical">
+                                <TextBlock>Category:</TextBlock>
+
+                                <!--  IsEnabled="{Binding AbsenceVM.SelectedAbsence, Converter={StaticResource NullToBoolConverter}}"  -->
+                                <ComboBox
+                                    x:Name="ComboBoxAbsenceCategory"
+                                    VerticalAlignment="Stretch"
+                                    ItemsSource="{Binding AbsenceVM.AbsenceTypeArray}"
+                                    SelectedItem="{Binding AbsenceVM.SelectedAbsence.Type}" />
+                            </StackPanel>
+                        </StackPanel>
+                        <Button
+                            Grid.Column="1"
+                            Margin="5"
+                            HorizontalAlignment="Stretch"
+                            VerticalAlignment="Stretch"
+                            Command="{Binding AbsenceVM.AddCommand}">
+                            <StackPanel Orientation="Vertical">
+                                <TextBlock
+                                    HorizontalAlignment="Center"
+                                    FontFamily="{StaticResource SymbolThemeFontFamily}"
+                                    FontSize="24"
+                                    Text="&#xE710;" />
+
+                                <TextBlock
+                                    FontSize="12"
+                                    TextAlignment="Center"
+                                    TextWrapping="Wrap">
+                                    Add VAB/Sickness
+                                </TextBlock>
+                            </StackPanel>
+                        </Button>
+                        <Button
+                            Grid.Column="2"
+                            Margin="5"
+                            HorizontalAlignment="Stretch"
+                            VerticalAlignment="Stretch"
+                            Command="{Binding AbsenceVM.DeleteCommand}">
+                            <StackPanel Orientation="Vertical">
+                                <TextBlock
+                                    HorizontalAlignment="Center"
+                                    FontFamily="{StaticResource SymbolThemeFontFamily}"
+                                    FontSize="36"
+                                    Text="&#xE74D;" />
+
+                                <TextBlock
+                                    FontSize="12"
+                                    TextAlignment="Center"
+                                    TextWrapping="Wrap">
+                                    Delete Selected Absence
+                                </TextBlock>
+                            </StackPanel>
+                        </Button>
+                    </Grid>
+
+                    <DataGrid
+                        Grid.Row="1"
+                        AutoGenerateColumns="False"
+                        IsReadOnly="True"
+                        ItemsSource="{Binding AbsenceVM.AbsenceItems}"
+                        SelectedItem="{Binding AbsenceVM.SelectedAbsence, Mode=TwoWay}"
+                        SelectionMode="Single">
+
+                        <DataGrid.Columns>
+
+                            <!--  Define the Date Column (with Custom Date Format)  -->
+                            <DataGridTextColumn
+                                Width="*"
+                                Binding="{Binding Date, StringFormat='MM/dd/yyyy'}"
+                                Header="Date" />
+
+                            <!--  Define the Amount Column (with Currency Format)  -->
+                            <DataGridTextColumn
+                                Width="*"
+                                Binding="{Binding Type}"
+                                Header="Type" />
+                        </DataGrid.Columns>
+
+                    </DataGrid>
+                </Grid>
+
+            </TabItem>
+        </TabControl>
+    </Grid>
+
+
+</Window>
