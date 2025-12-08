@@ -118,10 +118,13 @@
                             TextAlignment="Center" />
                     </StackPanel>
 
-                    <!--<StackPanel Grid.Row="3">
-                        <TextBlock>Monthly Forecast (TODO)</TextBlock>
-                        <TextBlock FontSize="24">Monthly Forecast (TODO)</TextBlock>
-                    </StackPanel>-->
+                    <StackPanel Grid.Row="3">
+                        <TextBlock TextAlignment="Center">Abscencedays this month</TextBlock>
+                        <TextBlock
+                            Style="{StaticResource TitleTextBlockStyle}"
+                            Text="{Binding AbsenceVM.AbsenceDaysThisMonth}"
+                            TextAlignment="Center" />
+                    </StackPanel>
                 </Grid>
             </TabItem>
             <!--  EXPPENSES HEREE  -->

@@ -13,6 +13,8 @@ namespace ExpensesAndStuff.ViewModels
         private readonly AbsenceService _absenceService;
         private AbsenceItemViewModel? _selectedAbsence;
 
+        public int AbsenceDaysThisMonth => GetAbsenceDaysForMonth();
+
         public AbsenceType[] AbsenceTypeArray => Enum.GetValues<AbsenceType>();
 
         public DelegateCommand AddCommand { get; }
@@ -114,11 +116,14 @@ namespace ExpensesAndStuff.ViewModels
             }
         }
 
-        public int GetAbsenceDaysForMonth(int month, int year)
+        public int GetAbsenceDaysForMonth()
         {
-            // Filter AbsenceItems to get only those that are in the current month and year
+            var curDate = DateTime.Now;
+            var thisMonth = curDate.Month;
+            var thisYear = curDate.Year;
+
             var absenceDaysInMonth = AbsenceItems
-                .Where(item => item.Date.Month == month && item.Date.Year == year)
+                .Where(item => item.Date.Month == thisMonth && item.Date.Year == thisYear)
                 .Count();
 
             return absenceDaysInMonth;
