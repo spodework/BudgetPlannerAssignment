@@ -268,7 +268,7 @@ namespace IncomesAndStuff.ViewModels
 
         private void OnExpensePropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            //RaisePropertyChanged(nameof(TotalAmount));
+            RaisePropertyChanged(nameof(TotalIncome));
             RaisePropertyChanged(nameof(NextMonthIncome));
         }
 
@@ -284,7 +284,7 @@ namespace IncomesAndStuff.ViewModels
                 foreach (ViewModelBase item in e.OldItems)
                     item.PropertyChanged -= OnExpensePropertyChanged;
 
-            //RaisePropertyChanged(nameof(TotalAmount));
+            RaisePropertyChanged(nameof(TotalIncome));
             RaisePropertyChanged(nameof(NextMonthIncome));
         }
     }
