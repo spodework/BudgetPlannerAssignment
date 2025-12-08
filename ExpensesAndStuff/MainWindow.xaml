@@ -9,7 +9,7 @@
     xmlns:vm="clr-namespace:ExpensesAndStuff.ViewModels"
     Title="MainWindow"
     Width="800"
-    Height="450"
+    Height="700"
     MinWidth="600"
     MinHeight="600"
     Loaded="Window_Loaded"
