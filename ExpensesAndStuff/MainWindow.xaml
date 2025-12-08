@@ -20,7 +20,7 @@
         <helpers:NullToBoolConverter x:Key="NullToBoolConverter" />
     </Window.Resources>
 
-    <Grid>
+    <Grid Margin="10">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
