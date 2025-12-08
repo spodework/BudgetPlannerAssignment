@@ -81,7 +81,7 @@
 
         </Grid>
         <TabControl Grid.Row="1">
-            <TabItem>
+            <TabItem IsSelected="True">
                 <TabItem.Header>
                     <TextBlock TextAlignment="Center">Summary</TextBlock>
                 </TabItem.Header>
@@ -115,7 +115,7 @@
                 </Grid>
             </TabItem>
             <!--  EXPPENSES HEREE  -->
-            <TabItem IsSelected="True">
+            <TabItem>
                 <TabItem.Header>
                     <TextBlock TextAlignment="Center">Expenses</TextBlock>
                 </TabItem.Header>
@@ -288,7 +288,13 @@
                     </DataGrid>
 
                     <StackPanel Grid.Row="2">
-                        <TextBlock Text="{Binding ExpenseVM.TotalAmount, StringFormat=C}" />
+                        <StackPanel>
+
+                            <TextBlock VerticalAlignment="Top" Text="Total Expenses Recorded:" />
+
+                            <TextBlock Text="{Binding ExpenseVM.TotalAmount, StringFormat=C}" />
+                        </StackPanel>
+
                         <StackPanel>
 
                             <TextBlock VerticalAlignment="Top" Text="Expenses Next Month:" />
@@ -296,7 +302,7 @@
                                 VerticalAlignment="Top"
                                 FontSize="16"
                                 FontWeight="Bold"
-                                Text="{Binding ExpenseVM.NextMonthExpense}" />
+                                Text="{Binding ExpenseVM.NextMonthExpenses}" />
                         </StackPanel>
                     </StackPanel>
 

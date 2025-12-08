@@ -1,23 +1,20 @@
 ﻿using ExpensesAndStuff.Command;
-using ExpensesAndStuff.Helpers;
 using ExpensesAndStuff.Interfaces;
 using ExpensesAndStuff.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
+using System.Collections.Specialized;
+using System.ComponentModel;
 using System.Windows;
 
 namespace ExpensesAndStuff.ViewModels
 {
     public class ExpenseViewModel : ViewModelBase
     {
-        private ObservableCollection<ExpenseItemViewModel> _expenseItems = new();
+        private ObservableCollection<ExpenseItemViewModel> _expenseItems;
         private ExpenseItemViewModel? _selectedExpense;
 
         private readonly ExpenseService _expenseService;
-
-        private decimal _nextMonthExpense;
-        private decimal _totalAmount;
 
         // for showing enums in dropdown
         public ExpenseRecurrence[] ExpenseRecurrenceArray => Enum.GetValues<ExpenseRecurrence>();
@@ -27,16 +24,7 @@ namespace ExpensesAndStuff.ViewModels
         public ExpenseViewModel(ExpenseService expenseService)
         {
             _expenseService = expenseService;
-
-            _ = LoadExpenses();
-  
-            CalculateTotalAmount();
-            ForecastNextMonthExpenses();
-
-            ExpenseItems.CollectionChanged += (s, e) => {
-                CalculateTotalAmount();
-                ForecastNextMonthExpenses();
-            };
+            _ = LoadExpensesAsync();
 
             AddCommand = new DelegateCommand(AddExpense);
             DeleteCommand = new DelegateCommand(DeleteExpense, CanDelete);
@@ -48,38 +36,29 @@ namespace ExpensesAndStuff.ViewModels
             get { return _expenseItems; }
             set
             {
-                if (_expenseItems != value)
+                if (_expenseItems != null)
                 {
-                    _expenseItems = value;
-                    RaisePropertyChanged();
-                    ForecastNextMonthExpenses();
+                    // Unsubscribe from old items
+                    foreach (var expense in _expenseItems)
+                        expense.PropertyChanged -= OnExpensePropertyChanged;
+
+                    _expenseItems.CollectionChanged -= OnExpensesCollectionChanged;
+                }
+
+                _expenseItems = value;
+
+                if (_expenseItems != null)
+                {
+                    // Subscribe to new items
+                    foreach (var expense in _expenseItems)
+                        expense.PropertyChanged += OnExpensePropertyChanged;
+
+                    _expenseItems.CollectionChanged += OnExpensesCollectionChanged;
                 }
             }
         }
 
-        public decimal NextMonthExpense
-        {
-            get => _nextMonthExpense;
-            set
-            {
-                _nextMonthExpense = value;
-                RaisePropertyChanged(nameof(NextMonthExpense));
-            }
-        }
-
-        private void ForecastNextMonthExpenses()
-        {
-            if (ExpenseItems != null && ExpenseItems.Count > 0)
-            {
-                NextMonthExpense = ForecastNextMonth(
-                        ExpenseItems.Select(e => new Expense
-                        {
-                            Amount = e.Amount,
-                            ExpenseRecurrence = e.ExpenseRecurrence,
-                        }).ToList(),
-                    DateTime.Now.Month);
-            }
-        }
+        public decimal NextMonthExpenses => ForecastNextMonth();
 
         public DelegateCommand AddCommand { get; }
         public DelegateCommand DeleteCommand { get; }
@@ -96,35 +75,19 @@ namespace ExpensesAndStuff.ViewModels
                     _selectedExpense = value;
                     RaisePropertyChanged();
                     DeleteCommand.RaiseCanExecuteChanged();
-                    CalculateTotalAmount();
                 }
             }
         }
 
-        public decimal TotalAmount
-        {
-            get => _totalAmount;
-            set
-            {
-                if (_totalAmount != value)
-                {
-                    _totalAmount = value;
-                    RaisePropertyChanged();
-                }
-            }
-        }
+        public decimal TotalAmount => ExpenseItems?.Sum(e => e.Amount) ?? 0;
 
-        private void CalculateTotalAmount()
-        {
-            TotalAmount = ExpenseItems.Sum(exp => exp.Amount);
-        }
 
         private async void AddExpense(object? parameter)
         {
             Expense expense = new()
             {
                 ExpenseCategory = ExpenseCategory.Uncategorized,
-                Amount = 0,
+                Amount = 500,
                 Date = DateTime.Now,
                 ExpenseRecurrence = ExpenseRecurrence.OneTime
             };
@@ -162,7 +125,7 @@ namespace ExpensesAndStuff.ViewModels
 
         }
 
-        public async Task LoadExpenses()
+        public async Task LoadExpensesAsync()
         {
             try
             {
@@ -172,12 +135,6 @@ namespace ExpensesAndStuff.ViewModels
                 ExpenseItems = new ObservableCollection<ExpenseItemViewModel>(
                     expenses.Select(expense => new ExpenseItemViewModel(expense))
                 );
-
-                foreach (var t in expenses)
-                {
-                    Debug.WriteLine($"{t.Amount} -- {t.ExpenseCategory}");
-                }
-
             }
             catch (Exception ex)
             {
@@ -186,18 +143,19 @@ namespace ExpensesAndStuff.ViewModels
         }
 
 
-        public static decimal ForecastNextMonth(List<Expense> expensesList, int thisMonth)
+        public decimal ForecastNextMonth()
         {
-            if (expensesList == null || expensesList.Count == 0)
-                return 0;
+            var thisMonth = DateTime.Now.Month;
 
+            if (ExpenseItems == null || ExpenseItems.Count == 0) return 0;
 
             int nextMonth = (thisMonth % 12) + 1;
 
             decimal forecastedAmount = 0;
-            foreach (var expense in expensesList)
+
+            foreach (var expense in ExpenseItems)
             {
-                forecastedAmount += GetExpenseForNextMonth(expense, nextMonth);
+                forecastedAmount += GetExpenseForNextMonth(new Expense() { Amount = expense.Amount, ExpenseRecurrence = expense.ExpenseRecurrence }, nextMonth);
             }
 
             return forecastedAmount;
@@ -243,5 +201,26 @@ namespace ExpensesAndStuff.ViewModels
             }
         }
 
+        private void OnExpensePropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            RaisePropertyChanged(nameof(TotalAmount));
+            RaisePropertyChanged(nameof(NextMonthExpenses));
+        }
+
+        private void OnExpensesCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            // Handle items added
+            if (e.NewItems != null)
+                foreach (ViewModelBase item in e.NewItems)
+                    item.PropertyChanged += OnExpensePropertyChanged;
+
+            // Handle items removed
+            if (e.OldItems != null)
+                foreach (ViewModelBase item in e.OldItems)
+                    item.PropertyChanged -= OnExpensePropertyChanged;
+
+            RaisePropertyChanged(nameof(TotalAmount));
+            RaisePropertyChanged(nameof(NextMonthExpenses));
+        }
     }
 }

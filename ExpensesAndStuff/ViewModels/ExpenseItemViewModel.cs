@@ -1,5 +1,4 @@
 ﻿using ExpensesAndStuff.Models;
-using System.Windows;
 
 namespace ExpensesAndStuff.ViewModels
 {
@@ -27,7 +26,7 @@ namespace ExpensesAndStuff.ViewModels
             set
             {
                 _model.Amount = value;
-                RaisePropertyChanged();
+                RaisePropertyChanged(nameof(Amount));
             }
         }
 

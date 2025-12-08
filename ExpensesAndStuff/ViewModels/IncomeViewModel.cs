@@ -5,6 +5,8 @@ using ExpensesAndStuff.Models;
 using ExpensesAndStuff.ViewModels;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Windows;
 
@@ -22,8 +24,6 @@ namespace IncomesAndStuff.ViewModels
         // math math math 
         private decimal _hourlySalaryIncome;
         private decimal _monthlySalaryResult;
-        private decimal _totalIncome;
-        private decimal _nextMonthIncome;
 
         // for showing enums in dropdown
         public IncomeRecurrence[] IncomeRecurrenceArray => Enum.GetValues<IncomeRecurrence>();
@@ -58,7 +58,7 @@ namespace IncomesAndStuff.ViewModels
         }
 
 
-        public void UpdateNextMonthIncome()
+        public decimal GetNextMonthIncome()
         {
             var monthlyIncomeItems = IncomeItems
                 .Where(item => item.IncomeCategory == IncomeCategory.MonthlySalary)
@@ -67,10 +67,9 @@ namespace IncomesAndStuff.ViewModels
             var currentMonth = DateTime.Now.Month;
             var currentYear = DateTime.Now.Year;
 
-
             decimal monthlyIncomeSum = monthlyIncomeItems.Sum(exp => exp.Amount);
 
-            NextMonthIncome = monthlyIncomeSum;
+            return monthlyIncomeSum;
         }
 
         // CONSTRUCTOR
@@ -83,12 +82,6 @@ namespace IncomesAndStuff.ViewModels
             AddCommand = new DelegateCommand(AddIncome);
             DeleteCommand = new DelegateCommand(DeleteIncome, CanDelete);
 
-            IncomeItems.CollectionChanged += (s, e) =>
-            {
-                UpdateNextMonthIncome();
-                UpdateTotalIncome();
-            };
-
             SaveCommand = new DelegateCommand(SaveChanges);
 
             CalculateSalaryCommand = new DelegateCommand(OpenSalaryCalc);
@@ -99,10 +92,26 @@ namespace IncomesAndStuff.ViewModels
             get { return _incomeItems; }
             set
             {
+
+                if (_incomeItems != null)
+                {
+                    // Unsubscribe from old items
+                    foreach (var expense in _incomeItems)
+                        expense.PropertyChanged -= OnExpensePropertyChanged;
+
+                    _incomeItems.CollectionChanged -= OnExpensesCollectionChanged;
+                }
+
                 _incomeItems = value;
-                RaisePropertyChanged();
-                UpdateNextMonthIncome();
-                UpdateTotalIncome();
+
+                if (_incomeItems != null)
+                {
+                    // Subscribe to new items
+                    foreach (var expense in _incomeItems)
+                        expense.PropertyChanged += OnExpensePropertyChanged;
+
+                    _incomeItems.CollectionChanged += OnExpensesCollectionChanged;
+                }
             }
         }
         public DelegateCommand AddCommand { get; }
@@ -121,24 +130,12 @@ namespace IncomesAndStuff.ViewModels
                     _selectedIncome = value;
                     RaisePropertyChanged();
                     DeleteCommand.RaiseCanExecuteChanged();
-                    UpdateNextMonthIncome();
-                    UpdateTotalIncome();
                 }
             }
         }
 
-        public decimal TotalIncome
-        {
-            get => _totalIncome;
-            set
-            {
-                if (_totalIncome != value)
-                {
-                    _totalIncome = value;
-                    RaisePropertyChanged();
-                }
-            }
-        }
+        public decimal TotalIncome => IncomeItems?.Sum(e => e.Amount) ?? 0;
+
 
         public ObservableCollection<IncomeCategory> IncomeCategories
         {
@@ -158,7 +155,7 @@ namespace IncomesAndStuff.ViewModels
             Income income = new()
             {
                 IncomeCategory = IncomeCategory.Uncategorized,
-                Amount = 0,
+                Amount = 500,
                 Date = DateTime.Now,
                 IncomeRecurrence = IncomeRecurrence.OneTime
             };
@@ -193,9 +190,6 @@ namespace IncomesAndStuff.ViewModels
             var incomeVM = new IncomeItemViewModel(income);
             IncomeItems.Add(incomeVM);
             SelectedIncome = incomeVM;
-
-            UpdateNextMonthIncome();
-            UpdateTotalIncome();
         }
 
 
@@ -223,15 +217,8 @@ namespace IncomesAndStuff.ViewModels
             await _incomeService.SaveChangesAsync();
         }
 
-        public decimal NextMonthIncome
-        {
-            get => _nextMonthIncome;
-            set
-            {
-                _nextMonthIncome = value;
-                RaisePropertyChanged();
-            }
-        }
+        public decimal NextMonthIncome => GetNextMonthIncome();
+
 
         private void OpenSalaryCalc(object? parameter)
         {
@@ -257,11 +244,6 @@ namespace IncomesAndStuff.ViewModels
             window.Show();
         }
 
-        public void UpdateTotalIncome()
-        {
-            TotalIncome = _incomeItems.Sum(item => item.Amount); // TODO FIX THIS YES
-        }
-
         public async Task LoadIncomes()
         {
             try
@@ -282,6 +264,28 @@ namespace IncomesAndStuff.ViewModels
             {
                 MessageBox.Show("An error occurred while loading incomes: " + ex.Message);
             }
+        }
+
+        private void OnExpensePropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            //RaisePropertyChanged(nameof(TotalAmount));
+            RaisePropertyChanged(nameof(NextMonthIncome));
+        }
+
+        private void OnExpensesCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            // Handle items added
+            if (e.NewItems != null)
+                foreach (ViewModelBase item in e.NewItems)
+                    item.PropertyChanged += OnExpensePropertyChanged;
+
+            // Handle items removed
+            if (e.OldItems != null)
+                foreach (ViewModelBase item in e.OldItems)
+                    item.PropertyChanged -= OnExpensePropertyChanged;
+
+            //RaisePropertyChanged(nameof(TotalAmount));
+            RaisePropertyChanged(nameof(NextMonthIncome));
         }
     }
 }

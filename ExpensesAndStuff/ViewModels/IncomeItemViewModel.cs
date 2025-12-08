@@ -27,7 +27,7 @@ namespace ExpensesAndStuff.ViewModels
             set
             {
                 _model.Amount = value;
-                RaisePropertyChanged(nameof(Amount));
+                RaisePropertyChanged();
             }
         }
 
@@ -49,7 +49,7 @@ namespace ExpensesAndStuff.ViewModels
                 if (_model.IncomeCategory != value)
                 {
                     _model.IncomeCategory = value;
-                    RaisePropertyChanged(nameof(IncomeCategory));
+                    RaisePropertyChanged();
                 }
             }
         }
@@ -62,7 +62,7 @@ namespace ExpensesAndStuff.ViewModels
                 if (_model.IncomeRecurrence != value)
                 {
                     _model.IncomeRecurrence = value;
-                    RaisePropertyChanged(nameof(IncomeRecurrence));
+                    RaisePropertyChanged();
                 }
             }
         }
