@@ -95,17 +95,17 @@
 
                     <StackPanel Grid.Row="0" VerticalAlignment="Center">
                         <TextBlock>All Expenses Recorded:</TextBlock>
-                        <TextBlock FontSize="24" Text="{Binding ExpenseVM.TotalAmount, StringFormat={}{0:F2}}" />
+                        <TextBlock FontSize="24" Text="{Binding ExpenseVM.TotalAmount, StringFormat=C}" />
                     </StackPanel>
 
                     <StackPanel Grid.Row="1">
                         <TextBlock>All Incomes Recorded</TextBlock>
-                        <TextBlock FontSize="24" Text="{Binding IncomeVM.TotalIncome, StringFormat={}{0:F2}}" />
+                        <TextBlock FontSize="24" Text="{Binding IncomeVM.TotalIncome, StringFormat=C}" />
                     </StackPanel>
 
                     <StackPanel Grid.Row="2">
                         <TextBlock>Incomes - Expenses</TextBlock>
-                        <TextBlock FontSize="24" Text="{Binding IncomesMinusExpenses, StringFormat={}{0:F2}}" />
+                        <TextBlock FontSize="24" Text="{Binding IncomesMinusExpenses, StringFormat=C}" />
                     </StackPanel>
 
                     <!--<StackPanel Grid.Row="3">
@@ -305,7 +305,7 @@
                                 VerticalAlignment="Top"
                                 FontSize="16"
                                 FontWeight="Bold"
-                                Text="{Binding ExpenseVM.NextMonthExpenses}" />
+                                Text="{Binding ExpenseVM.NextMonthExpenses, StringFormat=C}" />
                         </StackPanel>
                     </StackPanel>
 
@@ -521,15 +521,19 @@
                         <StackPanel>
                             <TextBlock VerticalAlignment="Top" Text="Total Incomes Recorded:" />
 
-                            <TextBlock Style="{StaticResource BodyStrongTextBlockStyle}" Text="{Binding IncomeVM.TotalIncome, StringFormat=C}" />
+                            <TextBlock
+                                FontSize="16"
+                                FontWeight="Bold"
+                                Text="{Binding IncomeVM.TotalIncome, StringFormat=C}" />
                         </StackPanel>
 
                         <StackPanel>
                             <TextBlock VerticalAlignment="Top" Text="Next month Incomes:" />
                             <TextBlock
                                 VerticalAlignment="Top"
-                                Style="{StaticResource BodyStrongTextBlockStyle}"
-                                Text="{Binding IncomeVM.NextMonthIncome}" />
+                                FontSize="16"
+                                FontWeight="Bold"
+                                Text="{Binding IncomeVM.NextMonthIncome, StringFormat=C}" />
                         </StackPanel>
                     </StackPanel>
 
