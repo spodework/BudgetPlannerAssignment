@@ -65,6 +65,7 @@
                         Text="&#xE74E;" />
 
                     <TextBlock
+                        Padding="10"
                         FontSize="12"
                         TextAlignment="Center"
                         TextWrapping="Wrap">
@@ -94,18 +95,27 @@
                     </Grid.RowDefinitions>
 
                     <StackPanel Grid.Row="0" VerticalAlignment="Center">
-                        <TextBlock>All Expenses Recorded:</TextBlock>
-                        <TextBlock FontSize="24" Text="{Binding ExpenseVM.TotalAmount, StringFormat=C}" />
+                        <TextBlock TextAlignment="Center">All Expenses Recorded:</TextBlock>
+                        <TextBlock
+                            Style="{StaticResource TitleTextBlockStyle}"
+                            Text="{Binding ExpenseVM.TotalAmount, StringFormat=C}"
+                            TextAlignment="Center" />
                     </StackPanel>
 
                     <StackPanel Grid.Row="1">
-                        <TextBlock>All Incomes Recorded</TextBlock>
-                        <TextBlock FontSize="24" Text="{Binding IncomeVM.TotalIncome, StringFormat=C}" />
+                        <TextBlock TextAlignment="Center">All Incomes Recorded</TextBlock>
+                        <TextBlock
+                            Style="{StaticResource TitleTextBlockStyle}"
+                            Text="{Binding IncomeVM.TotalIncome, StringFormat=C}"
+                            TextAlignment="Center" />
                     </StackPanel>
 
                     <StackPanel Grid.Row="2">
-                        <TextBlock>Incomes - Expenses</TextBlock>
-                        <TextBlock FontSize="24" Text="{Binding IncomesMinusExpenses, StringFormat=C}" />
+                        <TextBlock TextAlignment="Center">Incomes - Expenses =</TextBlock>
+                        <TextBlock
+                            Style="{StaticResource TitleTextBlockStyle}"
+                            Text="{Binding IncomesMinusExpenses, StringFormat=C}"
+                            TextAlignment="Center" />
                     </StackPanel>
 
                     <!--<StackPanel Grid.Row="3">
@@ -185,10 +195,11 @@
                                 <TextBlock
                                     HorizontalAlignment="Center"
                                     FontFamily="{StaticResource SymbolThemeFontFamily}"
-                                    FontSize="24"
+                                    FontSize="36"
                                     Text="&#xE74D;" />
 
                                 <TextBlock
+                                    Padding="10"
                                     FontSize="12"
                                     TextAlignment="Center"
                                     TextWrapping="Wrap">
@@ -211,10 +222,11 @@
                                 <TextBlock
                                     HorizontalAlignment="Center"
                                     FontFamily="{StaticResource SymbolThemeFontFamily}"
-                                    FontSize="24"
+                                    FontSize="36"
                                     Text="&#xE74E;" />
 
                                 <TextBlock
+                                    Padding="10"
                                     FontSize="12"
                                     TextAlignment="Center"
                                     TextWrapping="Wrap">
@@ -233,10 +245,11 @@
                                 <TextBlock
                                     HorizontalAlignment="Center"
                                     FontFamily="{StaticResource SymbolThemeFontFamily}"
-                                    FontSize="24"
+                                    FontSize="36"
                                     Text="&#xE710;" />
 
                                 <TextBlock
+                                    Padding="10"
                                     FontSize="12"
                                     TextAlignment="Center"
                                     TextWrapping="Wrap">
@@ -389,6 +402,7 @@
                                     Text="&#xE74D;" />
 
                                 <TextBlock
+                                    Padding="10"
                                     FontSize="12"
                                     TextAlignment="Center"
                                     TextWrapping="Wrap">
@@ -411,10 +425,11 @@
                                 <TextBlock
                                     HorizontalAlignment="Center"
                                     FontFamily="{StaticResource SymbolThemeFontFamily}"
-                                    FontSize="24"
+                                    FontSize="36"
                                     Text="&#xE74E;" />
 
                                 <TextBlock
+                                    Padding="10"
                                     FontSize="12"
                                     TextAlignment="Center"
                                     TextWrapping="Wrap">
@@ -437,6 +452,7 @@
                                     Text="&#xE710;" />
 
                                 <TextBlock
+                                    Padding="10"
                                     FontSize="12"
                                     TextAlignment="Center"
                                     TextWrapping="Wrap">
@@ -455,10 +471,11 @@
                                 <TextBlock
                                     HorizontalAlignment="Center"
                                     FontFamily="{StaticResource SymbolThemeFontFamily}"
-                                    FontSize="24"
-                                    Text="&#xE710;" />
+                                    FontSize="36"
+                                    Text="&#xE72c;" />
 
                                 <TextBlock
+                                    Padding="10"
                                     FontSize="12"
                                     TextAlignment="Center"
                                     TextWrapping="Wrap">
@@ -584,10 +601,11 @@
                                 <TextBlock
                                     HorizontalAlignment="Center"
                                     FontFamily="{StaticResource SymbolThemeFontFamily}"
-                                    FontSize="24"
+                                    FontSize="36"
                                     Text="&#xE710;" />
 
                                 <TextBlock
+                                    Padding="10"
                                     FontSize="12"
                                     TextAlignment="Center"
                                     TextWrapping="Wrap">
@@ -609,6 +627,7 @@
                                     Text="&#xE74D;" />
 
                                 <TextBlock
+                                    Padding="10"
                                     FontSize="12"
                                     TextAlignment="Center"
                                     TextWrapping="Wrap">
