@@ -1,2 +1,2 @@
-- wip deadline branch for 7/12/2025 //handlesickdays incomplete
+- wip deadline branch for 7/12/2025: handlesickdays incomplete, ui lack polish
 - main branch for further fixes
