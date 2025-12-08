@@ -108,10 +108,10 @@
                         <TextBlock FontSize="24" Text="{Binding IncomesMinusExpenses, StringFormat={}{0:F2}}" />
                     </StackPanel>
 
-                    <StackPanel Grid.Row="3">
+                    <!--<StackPanel Grid.Row="3">
                         <TextBlock>Monthly Forecast (TODO)</TextBlock>
                         <TextBlock FontSize="24">Monthly Forecast (TODO)</TextBlock>
-                    </StackPanel>
+                    </StackPanel>-->
                 </Grid>
             </TabItem>
             <!--  EXPPENSES HEREE  -->
@@ -292,7 +292,10 @@
 
                             <TextBlock VerticalAlignment="Top" Text="Total Expenses Recorded:" />
 
-                            <TextBlock Text="{Binding ExpenseVM.TotalAmount, StringFormat=C}" />
+                            <TextBlock
+                                FontSize="16"
+                                FontWeight="Bold"
+                                Text="{Binding ExpenseVM.TotalAmount, StringFormat=C}" />
                         </StackPanel>
 
                         <StackPanel>
@@ -515,13 +518,17 @@
                     </DataGrid>
 
                     <StackPanel Grid.Row="2">
-                        <TextBlock Text="{Binding IncomeVM.TotalIncome, StringFormat=C}" />
+                        <StackPanel>
+                            <TextBlock VerticalAlignment="Top" Text="Total Incomes Recorded:" />
+
+                            <TextBlock Style="{StaticResource BodyStrongTextBlockStyle}" Text="{Binding IncomeVM.TotalIncome, StringFormat=C}" />
+                        </StackPanel>
+
                         <StackPanel>
                             <TextBlock VerticalAlignment="Top" Text="Next month Incomes:" />
                             <TextBlock
                                 VerticalAlignment="Top"
-                                FontSize="16"
-                                FontWeight="Bold"
+                                Style="{StaticResource BodyStrongTextBlockStyle}"
                                 Text="{Binding IncomeVM.NextMonthIncome}" />
                         </StackPanel>
                     </StackPanel>
