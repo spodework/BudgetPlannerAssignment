@@ -92,6 +92,7 @@
                         <RowDefinition Height="*" />
                         <RowDefinition Height="*" />
                         <RowDefinition Height="*" />
+                        <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
 
                     <StackPanel Grid.Row="0" VerticalAlignment="Center">
@@ -124,6 +125,29 @@
                             Style="{StaticResource TitleTextBlockStyle}"
                             Text="{Binding AbsenceVM.AbsenceDaysThisMonth}"
                             TextAlignment="Center" />
+                    </StackPanel>
+
+                    <StackPanel
+                        Grid.Row="4"
+                        HorizontalAlignment="Center"
+                        Orientation="Horizontal">
+                        <StackPanel Margin="20,0">
+                            <TextBlock Text="Expenses Next Month:" TextAlignment="Center" />
+                            <TextBlock
+                                FontSize="16"
+                                FontWeight="Bold"
+                                Text="{Binding ExpenseVM.NextMonthExpenses, StringFormat=C}"
+                                TextAlignment="Center" />
+                        </StackPanel>
+
+                        <StackPanel>
+                            <TextBlock Text="Incomes Next Month:" TextAlignment="Center" />
+                            <TextBlock
+                                FontSize="16"
+                                FontWeight="Bold"
+                                Text="{Binding IncomeVM.NextMonthIncome, StringFormat=C}"
+                                TextAlignment="Center" />
+                        </StackPanel>
                     </StackPanel>
                 </Grid>
             </TabItem>
