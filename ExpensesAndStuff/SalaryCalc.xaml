@@ -25,10 +25,13 @@
 
             <Button Command="{Binding CalculateCommand}" Content="Calculate Salary!" />
 
-            <TextBlock
-                FontSize="16"
-                FontWeight="Bold"
-                Text="{Binding MonthlySalary}" />
+            <StackPanel>
+                <TextBlock>Monthly salary is:</TextBlock>
+                <TextBlock
+                    FontSize="16"
+                    FontWeight="Bold"
+                    Text="{Binding MonthlySalary, StringFormat=C}" />
+            </StackPanel>
 
 
         </StackPanel>
