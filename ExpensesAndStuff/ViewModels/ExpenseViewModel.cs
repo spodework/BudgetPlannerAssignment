@@ -40,9 +40,9 @@ namespace ExpensesAndStuff.ViewModels
                 {
                     // Unsubscribe from old items
                     foreach (var expense in _expenseItems)
-                        expense.PropertyChanged -= OnPropertyChanged;
+                        expense.PropertyChanged -= OnExpensePropertyChanged;
 
-                    _expenseItems.CollectionChanged -= OnCollectionChanged;
+                    _expenseItems.CollectionChanged -= OnExpenseItemsCollectionChanged;
                 }
 
                 _expenseItems = value;
@@ -51,9 +51,9 @@ namespace ExpensesAndStuff.ViewModels
                 {
                     // Subscribe to new items
                     foreach (var expense in _expenseItems)
-                        expense.PropertyChanged += OnPropertyChanged;
+                        expense.PropertyChanged += OnExpensePropertyChanged;
 
-                    _expenseItems.CollectionChanged += OnCollectionChanged;
+                    _expenseItems.CollectionChanged += OnExpenseItemsCollectionChanged;
                 }
             }
         }
@@ -201,23 +201,23 @@ namespace ExpensesAndStuff.ViewModels
             }
         }
 
-        private void OnPropertyChanged(object sender, PropertyChangedEventArgs e)
+        private void OnExpensePropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             RaisePropertyChanged(nameof(TotalAmount));
             RaisePropertyChanged(nameof(NextMonthExpenses));
         }
 
-        private void OnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private void OnExpenseItemsCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             // Handle items added
             if (e.NewItems != null)
                 foreach (ViewModelBase item in e.NewItems)
-                    item.PropertyChanged += OnPropertyChanged;
+                    item.PropertyChanged += OnExpensePropertyChanged;
 
             // Handle items removed
             if (e.OldItems != null)
                 foreach (ViewModelBase item in e.OldItems)
-                    item.PropertyChanged -= OnPropertyChanged;
+                    item.PropertyChanged -= OnExpensePropertyChanged;
 
             RaisePropertyChanged(nameof(TotalAmount));
             RaisePropertyChanged(nameof(NextMonthExpenses));

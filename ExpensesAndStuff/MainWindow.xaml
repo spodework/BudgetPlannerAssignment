@@ -57,7 +57,10 @@
                 HorizontalAlignment="Stretch"
                 VerticalAlignment="Stretch"
                 Command="{Binding ExpenseVM.SaveCommand}">
-                <StackPanel Orientation="Vertical">
+                <StackPanel
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Stretch"
+                    Orientation="Vertical">
                     <TextBlock
                         HorizontalAlignment="Center"
                         FontFamily="{StaticResource SymbolThemeFontFamily}"
@@ -65,7 +68,6 @@
                         Text="&#xE74E;" />
 
                     <TextBlock
-                        Padding="10"
                         FontSize="12"
                         TextAlignment="Center"
                         TextWrapping="Wrap">
