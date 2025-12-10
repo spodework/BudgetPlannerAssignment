@@ -14,6 +14,7 @@ namespace IncomesAndStuff.ViewModels
     public class IncomeViewModel : ViewModelBase
     {
         private readonly IncomeService _incomeService;
+        private readonly AbsenceService _absenceService;
 
         private UserViewModel _userViewModel;
         private string _userName;
@@ -93,8 +94,8 @@ namespace IncomesAndStuff.ViewModels
         private IncomeItemViewModel? _selectedIncome;
 
         // math math math 
-        private decimal _hourlySalaryIncome;
-        private decimal _monthlySalaryResult;
+        //private decimal _hourlySalaryIncome;
+        //private decimal _monthlySalaryResult;
 
         // for showing enums in dropdown
         public IncomeRecurrence[] IncomeRecurrenceArray => Enum.GetValues<IncomeRecurrence>();
@@ -102,61 +103,66 @@ namespace IncomesAndStuff.ViewModels
             .Where(c => c != IncomeCategory.MonthlySalary)
             .ToArray();
 
-        public decimal MonthlySalaryResult
-        {
-            get { return _monthlySalaryResult; }
-            set
-            {
-                if (_monthlySalaryResult != value)
-                {
-                    _monthlySalaryResult = value;
-                    RaisePropertyChanged();
-                }
-            }
-        }
+        //public decimal MonthlySalaryResult
+        //{
+        //    get { return _monthlySalaryResult; }
+        //    set
+        //    {
+        //        if (_monthlySalaryResult != value)
+        //        {
+        //            _monthlySalaryResult = value;
+        //            RaisePropertyChanged();
+        //        }
+        //    }
+        //}
 
-        public decimal HourlySalaryIncome
-        {
-            get { return _hourlySalaryIncome; }
-            set
-            {
-                if (_hourlySalaryIncome != value)
-                {
-                    _hourlySalaryIncome = value;
-                    RaisePropertyChanged();
-                }
-            }
-        }
+        //public decimal HourlySalaryIncome
+        //{
+        //    get { return _hourlySalaryIncome; }
+        //    set
+        //    {
+        //        if (_hourlySalaryIncome != value)
+        //        {
+        //            _hourlySalaryIncome = value;
+        //            RaisePropertyChanged();
+        //        }
+        //    }
+        //}
 
 
-        public decimal GetNextMonthIncome()
+        public async Task<decimal> GetNextMonthIncomeAsync()
         {
             var monthlyIncomeItems = IncomeItems
                 .Where(item => item.IncomeCategory == IncomeCategory.MonthlySalary)
                 .ToList();
 
-            var currentMonth = DateTime.Now.Month;
-            var currentYear = DateTime.Now.Year;
+            var absences = await _absenceService.GetThisMonthAbsencesAsync();
+            var absentDaysCount = absences.Count();
 
             decimal monthlyIncomeSum = monthlyIncomeItems.Sum(exp => exp.Amount);
 
-            return monthlyIncomeSum;
+            //MessageBox.Show(absentDaysCount.ToString());
+
+            return monthlyIncomeSum - ((8 * HourlySalary) * absentDaysCount);
         }
 
         // CONSTRUCTOR
 
-        public IncomeViewModel(IncomeService incomeService, UserViewModel userViewModel)
+        public IncomeViewModel(IncomeService incomeService, UserViewModel userViewModel, AbsenceService absenceService)
         {
+
             _incomeService = incomeService;
             _userViewModel = userViewModel;
-
+            _absenceService = absenceService;
             _ = LoadIncomes();
+            _ = LoadNextMonthIncomeAsync();
             AddCommand = new DelegateCommand(AddIncome);
             DeleteCommand = new DelegateCommand(DeleteIncome, CanDelete);
 
             SaveCommand = new DelegateCommand(SaveChanges);
 
             CalculateSalaryCommand = new DelegateCommand(OpenSalaryCalc);
+            
         }
 
         public ObservableCollection<IncomeItemViewModel> IncomeItems
@@ -209,8 +215,6 @@ namespace IncomesAndStuff.ViewModels
         }
 
         public decimal TotalIncome => IncomeItems?.Sum(e => e.Amount) ?? 0;
-
-
         public ObservableCollection<IncomeCategory> IncomeCategories
         {
             get => _incomeCategories;
@@ -291,8 +295,14 @@ namespace IncomesAndStuff.ViewModels
             await _incomeService.SaveChangesAsync();
         }
 
-        public decimal NextMonthIncome => GetNextMonthIncome();
-
+        private decimal _nextMonthIncome;
+        public decimal NextMonthIncome
+        {
+            get
+            {
+                return _nextMonthIncome;
+            }
+        }
 
         private void OpenSalaryCalc(object? parameter)
         {
@@ -304,6 +314,7 @@ namespace IncomesAndStuff.ViewModels
             window.Closed += async (s, e) =>
             {
                 await UpdateMonthlyIncomeInDb();
+                await LoadNextMonthIncomeAsync();
             };
 
             window.Show();
@@ -319,7 +330,6 @@ namespace IncomesAndStuff.ViewModels
                 IncomeItems = new ObservableCollection<IncomeItemViewModel>(
                     incomes.Select(income => new IncomeItemViewModel(income))
                 );
-
             }
             catch (Exception ex)
             {
@@ -331,6 +341,11 @@ namespace IncomesAndStuff.ViewModels
         {
             RaisePropertyChanged(nameof(TotalIncome));
             RaisePropertyChanged(nameof(NextMonthIncome));
+        }
+
+        public async Task LoadNextMonthIncomeAsync()
+        {
+            _nextMonthIncome = await GetNextMonthIncomeAsync();
         }
 
         private void OnIncomeItemsCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)

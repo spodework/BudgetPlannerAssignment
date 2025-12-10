@@ -32,7 +32,7 @@ namespace ExpensesAndStuff.ViewModels
 
             UserVM = new UserViewModel(_userService);
             ExpenseVM = new ExpenseViewModel(_expenseService);
-            IncomeVM = new IncomeViewModel(_incomeService, UserVM);//, _userService);//,UserVM);//, _userService);
+            IncomeVM = new IncomeViewModel(_incomeService, UserVM, _absenceService);
             AbsenceVM = new AbsenceViewModel(_absenceService);
             
         }

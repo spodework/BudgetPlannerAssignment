@@ -17,6 +17,17 @@ namespace ExpensesAndStuff.Interfaces
             return await _context.Absences.ToListAsync();
         }
 
+        public async Task<List<Absence>> GetThisMonthAbsencesAsync()
+        {
+            var now = DateTime.Now;
+
+            var currentMonthAbsences = await _context.Absences
+                .Where(a => a.Date.Month == now.Month && a.Date.Year == now.Year)
+                .ToListAsync();
+
+            return currentMonthAbsences;
+        }
+
         public async Task<Absence> GetAbsenceAsync(int id)
         {
             return await _context.Absences.FindAsync(id);
