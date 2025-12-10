@@ -1,6 +1,5 @@
 ﻿using ExpensesAndStuff;
 using ExpensesAndStuff.Command;
-using ExpensesAndStuff.Data;
 using ExpensesAndStuff.Interfaces;
 using ExpensesAndStuff.Models;
 using ExpensesAndStuff.ViewModels;
@@ -8,7 +7,6 @@ using Microsoft.EntityFrameworkCore;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Windows;
 
 namespace IncomesAndStuff.ViewModels
@@ -16,20 +14,9 @@ namespace IncomesAndStuff.ViewModels
     public class IncomeViewModel : ViewModelBase
     {
         private readonly IncomeService _incomeService;
-        //private readonly UserViewModel _userViewModel;
-
-        //private readonly UserService _userService;
-
-        //public decimal Income => _userService.GetUserAsync(0).Result / 12;
-
 
         private UserViewModel _userViewModel;
         private string _userName;
-
-        // Single-line getter for UserName directly from UserViewModel
-        //public string UserName => _userViewModel.UserName;
-
-        // Property to expose user name to the view
         public string UserName
         {
             get { return _userName; }
@@ -115,17 +102,6 @@ namespace IncomesAndStuff.ViewModels
             .Where(c => c != IncomeCategory.MonthlySalary)
             .ToArray();
 
-        //// Property for UserViewModel (optional)
-        //public UserViewModel UserViewModel
-        //{
-        //    get => _userViewModel;
-        //    set
-        //    {
-        //        _userViewModel = value;
-        //        RaisePropertyChanged();
-        //    }
-        //}
-
         public decimal MonthlySalaryResult
         {
             get { return _monthlySalaryResult; }
@@ -169,13 +145,11 @@ namespace IncomesAndStuff.ViewModels
 
         // CONSTRUCTOR
 
-        public IncomeViewModel(IncomeService incomeService, UserViewModel userViewModel)//, UserService userService)//, UserService userService)//, UserViewModel userViewModel)//, UserService userService)
+        public IncomeViewModel(IncomeService incomeService, UserViewModel userViewModel)
         {
             _incomeService = incomeService;
-            //_userService = userService;
             _userViewModel = userViewModel;
 
-            //_ = LoadUser();
             _ = LoadIncomes();
             AddCommand = new DelegateCommand(AddIncome);
             DeleteCommand = new DelegateCommand(DeleteIncome, CanDelete);
@@ -337,7 +311,7 @@ namespace IncomesAndStuff.ViewModels
 
         public async Task LoadIncomes()
         {
-            
+
             try
             {
                 var incomes = await _incomeService.GetIncomesAsync();
