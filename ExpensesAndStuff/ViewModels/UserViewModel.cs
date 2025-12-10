@@ -22,7 +22,7 @@ namespace ExpensesAndStuff.ViewModels
 
         private async void UpdateUser(object? parameter)
         {
-            var user = await _userService.GetUserAsync(1); // Assuming 0 is the ID of the first user
+            var user = await _userService.GetUserAsync(1);
 
             user.YearlySalary = YearlySalary;
             user.YearlyWorkHours = YearlyWorkHours;

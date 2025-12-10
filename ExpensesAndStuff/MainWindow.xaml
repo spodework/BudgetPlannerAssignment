@@ -12,7 +12,6 @@
     Height="700"
     MinWidth="600"
     MinHeight="600"
-    Loaded="Window_Loaded"
     WindowStartupLocation="CenterScreen"
     mc:Ignorable="d">
 
