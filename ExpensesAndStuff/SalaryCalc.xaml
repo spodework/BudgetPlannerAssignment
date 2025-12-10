@@ -10,9 +10,6 @@
     Height="450"
     WindowStartupLocation="CenterScreen"
     mc:Ignorable="d">
-    <Window.Resources>
-        <local:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
-    </Window.Resources>
     <Grid Margin="20">
         <StackPanel>
 
@@ -20,10 +17,10 @@
                 <TextBlock>Enter Yearly Salary</TextBlock>
                 <TextBox Text="{Binding YearlySalary}" />
                 <TextBlock>Enter yearly hourcount</TextBlock>
-                <TextBox Text="{Binding YearlyHours}" />
+                <TextBox Text="{Binding YearlyWorkHours}" />
             </StackPanel>
 
-            <Button Command="{Binding CalculateCommand}" Content="Calculate Salary!" />
+            <Button Command="{Binding UpdateCommand}" Content="Update USER in DB!" />
 
             <StackPanel>
                 <TextBlock>Monthly salary is:</TextBlock>
@@ -31,6 +28,14 @@
                     FontSize="16"
                     FontWeight="Bold"
                     Text="{Binding MonthlySalary, StringFormat=C}" />
+            </StackPanel>
+
+            <StackPanel>
+                <TextBlock>Hourly salary is:</TextBlock>
+                <TextBlock
+                    FontSize="16"
+                    FontWeight="Bold"
+                    Text="{Binding HourlyWage}" />
             </StackPanel>
 
 

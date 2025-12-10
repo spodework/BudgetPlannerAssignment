@@ -1,4 +1,5 @@
 ﻿using ExpensesAndStuff.Command;
+using ExpensesAndStuff.Data;
 using ExpensesAndStuff.Interfaces;
 using IncomesAndStuff.ViewModels;
 
@@ -12,23 +13,26 @@ namespace ExpensesAndStuff.ViewModels
         private IncomeViewModel _incomeViewModel;
         private ExpenseViewModel _expenseViewModel;
         private AbsenceViewModel _absenceViewModel;
+        private UserViewModel _userViewModel;
 
         private readonly IncomeService _incomeService;
         private readonly ExpenseService _expenseService;
         private readonly AbsenceService _absenceService;
+        private readonly UserService _userService;
 
         //CONSTRUCTOR
-        public MainViewModel(ExpenseService expenseService, IncomeService incomeService, AbsenceService absenceService)
+        public MainViewModel(ExpenseService expenseService, IncomeService incomeService, AbsenceService absenceService, UserService userService)
         {
             _currentDate = DateTime.Now;
 
             _incomeService = incomeService;
             _expenseService = expenseService;
             _absenceService = absenceService;
-            
+            _userService = userService;
 
+            UserVM = new UserViewModel(_userService);
             ExpenseVM = new ExpenseViewModel(_expenseService);
-            IncomeVM = new IncomeViewModel(_incomeService);
+            IncomeVM = new IncomeViewModel(_incomeService, UserVM);//, _userService);//,UserVM);//, _userService);
             AbsenceVM = new AbsenceViewModel(_absenceService);
             
         }
@@ -103,6 +107,19 @@ namespace ExpensesAndStuff.ViewModels
                 {
                     _absenceViewModel = value;
                     RaisePropertyChanged(nameof(AbsenceVM));
+                }
+            }
+        }
+
+        public UserViewModel UserVM
+        {
+            get { return _userViewModel; }
+            set
+            {
+                if (_userViewModel != value)
+                {
+                    _userViewModel = value;
+                    RaisePropertyChanged(nameof(UserVM));
                 }
             }
         }

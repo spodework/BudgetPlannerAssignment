@@ -95,9 +95,37 @@
                         <RowDefinition Height="*" />
                         <RowDefinition Height="*" />
                         <RowDefinition Height="*" />
+                        <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
 
-                    <StackPanel Grid.Row="0" VerticalAlignment="Center">
+                    <StackPanel
+                        Grid.Row="0"
+                        HorizontalAlignment="Center"
+                        Orientation="Horizontal">
+                        <StackPanel>
+                            <TextBlock TextAlignment="Center">Current User:</TextBlock>
+                            <TextBlock
+                                Style="{StaticResource TitleTextBlockStyle}"
+                                Text="{Binding UserVM.UserName, StringFormat=C}"
+                                TextAlignment="Center" />
+                        </StackPanel>
+                        <StackPanel Margin="20,0">
+                            <TextBlock TextAlignment="Center">Yearly Workhours:</TextBlock>
+                            <TextBlock
+                                Style="{StaticResource TitleTextBlockStyle}"
+                                Text="{Binding UserVM.YearlyWorkHours}"
+                                TextAlignment="Center" />
+                        </StackPanel>
+                        <StackPanel>
+                            <TextBlock TextAlignment="Center">Yearly Salary:</TextBlock>
+                            <TextBlock
+                                Style="{StaticResource TitleTextBlockStyle}"
+                                Text="{Binding UserVM.YearlySalary}"
+                                TextAlignment="Center" />
+                        </StackPanel>
+                    </StackPanel>
+
+                    <StackPanel Grid.Row="1" VerticalAlignment="Center">
                         <TextBlock TextAlignment="Center">All Expenses Recorded:</TextBlock>
                         <TextBlock
                             Style="{StaticResource TitleTextBlockStyle}"
@@ -105,7 +133,7 @@
                             TextAlignment="Center" />
                     </StackPanel>
 
-                    <StackPanel Grid.Row="1">
+                    <StackPanel Grid.Row="2">
                         <TextBlock TextAlignment="Center">All Incomes Recorded</TextBlock>
                         <TextBlock
                             Style="{StaticResource TitleTextBlockStyle}"
@@ -113,7 +141,7 @@
                             TextAlignment="Center" />
                     </StackPanel>
 
-                    <StackPanel Grid.Row="2">
+                    <StackPanel Grid.Row="3">
                         <TextBlock TextAlignment="Center">Incomes - Expenses =</TextBlock>
                         <TextBlock
                             Style="{StaticResource TitleTextBlockStyle}"
@@ -121,7 +149,7 @@
                             TextAlignment="Center" />
                     </StackPanel>
 
-                    <StackPanel Grid.Row="3">
+                    <StackPanel Grid.Row="4">
                         <TextBlock TextAlignment="Center">Abscencedays this month</TextBlock>
                         <TextBlock
                             Style="{StaticResource TitleTextBlockStyle}"
@@ -130,11 +158,11 @@
                     </StackPanel>
 
                     <StackPanel
-                        Grid.Row="4"
+                        Grid.Row="5"
                         HorizontalAlignment="Center"
                         Orientation="Horizontal">
                         <StackPanel Margin="20,0">
-                            <TextBlock Text="Expenses Next Month:" TextAlignment="Center" />
+                            <TextBlock Text="Recurring Expenses Next Month:" TextAlignment="Center" />
                             <TextBlock
                                 FontSize="16"
                                 FontWeight="Bold"
@@ -143,7 +171,7 @@
                         </StackPanel>
 
                         <StackPanel>
-                            <TextBlock Text="Incomes Next Month:" TextAlignment="Center" />
+                            <TextBlock Text="Recurring Incomes Next Month:" TextAlignment="Center" />
                             <TextBlock
                                 FontSize="16"
                                 FontWeight="Bold"
@@ -342,7 +370,7 @@
 
                         <StackPanel>
 
-                            <TextBlock VerticalAlignment="Top" Text="Expenses Next Month:" />
+                            <TextBlock VerticalAlignment="Top" Text="Expenses (recurring) Next Month:" />
                             <TextBlock
                                 VerticalAlignment="Top"
                                 FontSize="16"
@@ -563,7 +591,7 @@
 
                     </DataGrid>
 
-                    <StackPanel Grid.Row="2">
+                    <StackPanel Grid.Row="2" Orientation="Horizontal">
                         <StackPanel>
                             <TextBlock VerticalAlignment="Top" Text="Total Incomes Recorded:" />
 
@@ -573,13 +601,21 @@
                                 Text="{Binding IncomeVM.TotalIncome, StringFormat=C}" />
                         </StackPanel>
 
-                        <StackPanel>
-                            <TextBlock VerticalAlignment="Top" Text="Next month Incomes:" />
+                        <StackPanel Margin="20,0">
+                            <TextBlock VerticalAlignment="Top" Text="Next month Incomes (recurring):" />
                             <TextBlock
                                 VerticalAlignment="Top"
                                 FontSize="16"
                                 FontWeight="Bold"
                                 Text="{Binding IncomeVM.NextMonthIncome, StringFormat=C}" />
+                        </StackPanel>
+                        <StackPanel>
+                            <TextBlock VerticalAlignment="Top" Text="Yearly Workhours:" />
+                            <TextBlock
+                                VerticalAlignment="Top"
+                                FontSize="16"
+                                FontWeight="Bold"
+                                Text="{Binding UserVM.YearlyWorkHours}" />
                         </StackPanel>
                     </StackPanel>
 

@@ -1,4 +1,5 @@
-﻿using ExpensesAndStuff.Interfaces;
+﻿using ExpensesAndStuff.Data;
+using ExpensesAndStuff.Interfaces;
 using ExpensesAndStuff.ViewModels;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -46,6 +47,7 @@ namespace ExpensesAndStuff
             services.AddTransient<ExpenseService>();
             services.AddTransient<IncomeService>();
             services.AddTransient<AbsenceService>();
+            services.AddTransient<UserService>();
 
             // ViewModels
             services.AddTransient<MainViewModel>();

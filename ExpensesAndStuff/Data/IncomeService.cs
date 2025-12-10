@@ -35,8 +35,6 @@ namespace ExpensesAndStuff.Interfaces
                 .ToListAsync();
         }
 
-
-        // Asynchronous method for deleting an expense
         public async Task<bool> DeleteIncomeAsync(int expenseId)
         {
             var existingExpense = await _context.Incomes
@@ -44,19 +42,19 @@ namespace ExpensesAndStuff.Interfaces
 
             if (existingExpense == null)
             {
-                return false; // Expense not found
+                return false;
             }
 
             _context.Incomes.Remove(existingExpense);
             await _context.SaveChangesAsync();
 
-            return true; // Successfully deleted
+            return true; 
         }
 
         public async Task AddAsync(Income income)
         {
             await _context.Incomes.AddAsync(income);
-            await _context.SaveChangesAsync(); // for saving ID
+            await _context.SaveChangesAsync();
         }
 
         public async Task<bool> UpdateAsync(Income income)
@@ -71,7 +69,6 @@ namespace ExpensesAndStuff.Interfaces
             existingIncome.Amount = income.Amount;
             existingIncome.IncomeCategory = income.IncomeCategory;
             existingIncome.IncomeRecurrence = income.IncomeRecurrence;
-
 
             // Save changes to the database
             await _context.SaveChangesAsync();

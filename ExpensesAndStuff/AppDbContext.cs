@@ -5,9 +5,9 @@ namespace ExpensesAndStuff
 {
     public class AppDbContext : DbContext
     {
+        public DbSet<User> Users { get; set; }
         public DbSet<Income> Incomes { get; set; }
         public DbSet<Expense> Expenses { get; set; }
-
         public DbSet<Absence> Absences { get; set; }
 
         public string DbPath { get; }
