@@ -31,71 +31,11 @@ namespace IncomesAndStuff.ViewModels
             }
         }
 
-        private decimal _hourlySalary;
-        public decimal HourlySalary
-        {
-            get { return _hourlySalary; }
-            set
-            {
-                if (_hourlySalary != value)
-                {
-                    _hourlySalary = value;
-                    RaisePropertyChanged();
-                }
-            }
-        }
-
-        private int _monthlySalary;
-        public int MonthlySalary
-        {
-            get { return _monthlySalary; }
-            set
-            {
-                if (_monthlySalary != value)
-                {
-                    _monthlySalary = value;
-                    RaisePropertyChanged();
-                }
-            }
-        }
-
-        private int _yearlyWorkHours;
-        public int YearlyWorkHours
-        {
-            get { return _yearlyWorkHours; }
-            set
-            {
-                if (_yearlyWorkHours != value)
-                {
-                    _yearlyWorkHours = value;
-                    RaisePropertyChanged();
-                }
-            }
-        }
-
-        private decimal _yearlySalary;
-        public decimal YearlySalary
-        {
-            get { return _yearlySalary; }
-            set
-            {
-                if (_yearlySalary != value)
-                {
-                    _yearlySalary = value;
-                    RaisePropertyChanged();
-                }
-            }
-        }
-
         private ObservableCollection<IncomeCategory> _incomeCategories;
 
         private ObservableCollection<IncomeItemViewModel> _incomeItems = new();
 
         private IncomeItemViewModel? _selectedIncome;
-
-        // math math math 
-        //private decimal _hourlySalaryIncome;
-        //private decimal _monthlySalaryResult;
 
         // for showing enums in dropdown
         public IncomeRecurrence[] IncomeRecurrenceArray => Enum.GetValues<IncomeRecurrence>();
@@ -103,32 +43,12 @@ namespace IncomesAndStuff.ViewModels
             .Where(c => c != IncomeCategory.MonthlySalary)
             .ToArray();
 
-        //public decimal MonthlySalaryResult
-        //{
-        //    get { return _monthlySalaryResult; }
-        //    set
-        //    {
-        //        if (_monthlySalaryResult != value)
-        //        {
-        //            _monthlySalaryResult = value;
-        //            RaisePropertyChanged();
-        //        }
-        //    }
-        //}
-
-        //public decimal HourlySalaryIncome
-        //{
-        //    get { return _hourlySalaryIncome; }
-        //    set
-        //    {
-        //        if (_hourlySalaryIncome != value)
-        //        {
-        //            _hourlySalaryIncome = value;
-        //            RaisePropertyChanged();
-        //        }
-        //    }
-        //}
-
+        public async Task<int> GetThisMonthAbsencesAsync()
+        {
+            var absences = await _absenceService.GetThisMonthAbsencesAsync();
+            var filtered = absences.Where(item => item.Type == AbsenceType.VAB);
+            return filtered.Count();
+        }
 
         public async Task<decimal> GetNextMonthIncomeAsync()
         {
@@ -137,13 +57,19 @@ namespace IncomesAndStuff.ViewModels
                 .ToList();
 
             var absences = await _absenceService.GetThisMonthAbsencesAsync();
-            var absentDaysCount = absences.Count();
+            var filtered = absences.Where(item => item.Type == AbsenceType.VAB);
+
+            var absentDaysCount = filtered.Count();
 
             decimal monthlyIncomeSum = monthlyIncomeItems.Sum(exp => exp.Amount);
 
-            //MessageBox.Show(absentDaysCount.ToString());
+            decimal daysWorth = (8 * HourlySalary);
 
-            return monthlyIncomeSum - ((8 * HourlySalary) * absentDaysCount);
+            decimal monthlyIncomeSumMinusSickdays = monthlyIncomeSum - ((8 * HourlySalary) * absentDaysCount);
+
+            decimal monthlyIncomeSumMinusSickdaysPlusBenefits = monthlyIncomeSumMinusSickdays + ((8 * HourlySalary) * 0.8m);
+            
+            return monthlyIncomeSumMinusSickdaysPlusBenefits;
         }
 
         // CONSTRUCTOR
@@ -213,8 +139,8 @@ namespace IncomesAndStuff.ViewModels
                 }
             }
         }
-
         public decimal TotalIncome => IncomeItems?.Sum(e => e.Amount) ?? 0;
+        public decimal HourlySalary => _userViewModel.HourlyWage;
         public ObservableCollection<IncomeCategory> IncomeCategories
         {
             get => _incomeCategories;
@@ -267,7 +193,6 @@ namespace IncomesAndStuff.ViewModels
             SelectedIncome = incomeVM;
 
             await _incomeService.AddAsync(income);
-
         }
 
 
@@ -341,6 +266,8 @@ namespace IncomesAndStuff.ViewModels
         {
             RaisePropertyChanged(nameof(TotalIncome));
             RaisePropertyChanged(nameof(NextMonthIncome));
+            RaisePropertyChanged(nameof(HourlySalary));
+            LoadNextMonthIncomeAsync();
         }
 
         public async Task LoadNextMonthIncomeAsync()
@@ -362,6 +289,9 @@ namespace IncomesAndStuff.ViewModels
 
             RaisePropertyChanged(nameof(TotalIncome));
             RaisePropertyChanged(nameof(NextMonthIncome));
+            RaisePropertyChanged(nameof(HourlySalary));
+            LoadNextMonthIncomeAsync();
+
         }
     }
 }

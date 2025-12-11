@@ -115,6 +115,13 @@
                                 Text="{Binding UserVM.YearlyWorkHours}"
                                 TextAlignment="Center" />
                         </StackPanel>
+                        <StackPanel Margin="0,0,20,0">
+                            <TextBlock TextAlignment="Center">Hourly Salary:</TextBlock>
+                            <TextBlock
+                                Style="{StaticResource TitleTextBlockStyle}"
+                                Text="{Binding IncomeVM.HourlySalary, StringFormat=C}"
+                                TextAlignment="Center" />
+                        </StackPanel>
                         <StackPanel>
                             <TextBlock TextAlignment="Center">Yearly Salary:</TextBlock>
                             <TextBlock
@@ -148,12 +155,17 @@
                             TextAlignment="Center" />
                     </StackPanel>
 
-                    <StackPanel Grid.Row="4">
-                        <TextBlock TextAlignment="Center">Abscencedays this month</TextBlock>
-                        <TextBlock
-                            Style="{StaticResource TitleTextBlockStyle}"
-                            Text="{Binding AbsenceVM.AbsenceDaysThisMonth}"
-                            TextAlignment="Center" />
+                    <StackPanel
+                        Grid.Row="4"
+                        HorizontalAlignment="Center"
+                        Orientation="Horizontal">
+                        <StackPanel Margin="10,0">
+                            <TextBlock TextAlignment="Center">Abscencedays this month</TextBlock>
+                            <TextBlock
+                                Style="{StaticResource TitleTextBlockStyle}"
+                                Text="{Binding AbsenceVM.AbsenceDaysThisMonth}"
+                                TextAlignment="Center" />
+                        </StackPanel>
                     </StackPanel>
 
                     <StackPanel
@@ -601,7 +613,10 @@
                         </StackPanel>
 
                         <StackPanel Margin="20,0">
-                            <TextBlock VerticalAlignment="Top" Text="Next month Incomes (recurring):" />
+                            <TextBlock
+                                VerticalAlignment="Top"
+                                Text="Next month Incomes (recurring, accounted for sickdays):"
+                                TextWrapping="Wrap" />
                             <TextBlock
                                 VerticalAlignment="Top"
                                 FontSize="16"
